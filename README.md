@@ -1,16 +1,8 @@
-Purchase API Backend
+# Purchase API Backend
 A Clojure REST API for the Purchase mobile application.
 
-Project Structure
+## Project Structure
 
-
-1
-2
-3
-4
-5
-6
-7
 be_purchase/
 ├── src/
 │   └── purchase/
@@ -18,88 +10,79 @@ be_purchase/
 ├── deps.edn                  # Project dependencies and aliases
 ├── README.md                 # This file
 └── .gitignore                # Git ignore file
-Prerequisites
-Clojure CLI
-Java JDK 8 or later
-Development Setup
+
+## Prerequisites
+ - Clojure CLI
+ - Java JDK 8 or later
+
+## Development Setup
 1. Clone the repository
-bash
 
-
-1
-2
+```bash
 git clone <repository-url>
 cd be_purchase
+```
+
 2. Start the development REPL
-bash
-
-
-1
+```bash
 clojure -M:dev
+```
 This will start an nREPL server (note the port number displayed).
 
 3. Connect your editor
 In your Clojure editor (Neovim with Conjure, Emacs, etc.), connect to the nREPL server:
-
-vim
-
-
-1
+```vim
 :ConjureConnect localhost <port_number>
-Starting the Server
+```
+
+## Starting the Server
 Method 1: From the REPL (Development)
+
 In your REPL or editor:
-
-clojure
-
-
-1
+```Clojure
 (purchase.core/start-server)
+```
+
 Method 2: Direct execution
-bash
-
-
-1
+```bash
 clojure -M:run
+```
 The server will start on port 3000.
 
-API Endpoints
+## API Endpoints
+
 Health Check
-bash
-
-
-1
+```bash
 GET http://localhost:3000/health
+```
+
 Response:
-
-json
-
-
-1
+```json
 {"status":"healthy"}
+```
+
 Main Endpoint
-bash
-
-
-1
+```bash
 GET http://localhost:3000/
+```
+
 Response:
-
-json
-
-
-1
+```json
 {"message":"Opa deu certo"}
-Development Workflow
+```
+
+## Development Workflow
 In Neovim with Conjure:
-Reload file changes: :ConjureEvalBuf
-Start server: :ConjureEval (purchase.core/start-server)
-Stop server: :ConjureEval (purchase.core/stop-server)
-Restart server: :ConjureEval (purchase.core/restart-server)
+1. Reload file changes: :ConjureEvalBuf
+2. Start server: :ConjureEval (purchase.core/start-server)
+3. Stop server: :ConjureEval (purchase.core/stop-server)
+4. Restart server: :ConjureEval (purchase.core/restart-server)
+
 Auto-reload on save:
+
 The buffer automatically evaluates when you save .clj files.
 
-Project Commands
+## Project Commands
 clojure -M:dev
 Start development REPL with nREPL
 clojure -M:run
@@ -110,31 +93,28 @@ Reload current buffer in REPL
 Start the web server
 :ConjureEval (purchase.core/stop-server)
 Stop the web server
-Testing Endpoints
-bash
 
-
-1
-2
-3
-4
-5
+## Testing Endpoints
+```bash
 # Health check
 curl http://localhost:3000/health
 
 # Main endpoint
 curl http://localhost:3000/
-Dependencies
-ring/ring: Web application library
-compojure/compojure: Routing library
-ring/ring-json: JSON middleware
-cheshire/cheshire: JSON parsing
-Environment Variables
+```
+
+## Dependencies
+ - ring/ring: Web application library
+ - compojure/compojure: Routing library
+ - ring/ring-json: JSON middleware
+ - cheshire/cheshire: JSON parsing
+
+## Environment Variables
+```bash
 PORT: Server port (defaults to 3000)
-Example:
+```
 
-bash
-
-
-1
+## Example:
+```bash
 PORT=8080 clojure -M:run
+```
