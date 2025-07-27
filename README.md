@@ -5,11 +5,11 @@ A Clojure REST API for the Purchase mobile application.
 
 be_purchase/
 ├── src/
-│   └── purchase/
-│       └── core.clj          # Main application entry point
-├── deps.edn                  # Project dependencies and aliases
-├── README.md                 # This file
-└── .gitignore                # Git ignore file
+│ └── purchase/
+│ └── core.clj # Main application entry point
+├── deps.edn # Project dependencies and aliases
+├── README.md # This file
+└── .gitignore # Git ignore file
 
 ## Prerequisites
  - Clojure CLI
