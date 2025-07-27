@@ -1,0 +1,10 @@
+{:deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        ring/ring {:mvn/version "1.10.0"}
+        compojure/compojure {:mvn/version "1.7.0"}
+        ring/ring-json {:mvn/version "0.5.1"}
+        cheshire/cheshire {:mvn/version "5.11.0"}}
+ :paths ["src" "resources"]
+ :aliases {:dev {:extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}}
+                 :main-opts ["-m" "nrepl.cmdline" "--interactive"]}
+           :test {:extra-paths ["test"]}
+           :run {:main-opts ["-m" "purchase.core"]}}}
