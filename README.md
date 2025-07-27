@@ -1,16 +1,6 @@
 # Purchase API Backend
 A Clojure REST API for the Purchase mobile application.
 
-## Project Structure
-
-be_purchase/
-├── src/
-│ └── purchase/
-│ └── core.clj # Main application entry point
-├── deps.edn # Project dependencies and aliases
-├── README.md # This file
-└── .gitignore # Git ignore file
-
 ## Prerequisites
  - Clojure CLI
  - Java JDK 8 or later
