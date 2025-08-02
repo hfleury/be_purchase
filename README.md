@@ -19,6 +19,12 @@ clojure -M:dev
 ```
 This will start an nREPL server (note the port number displayed).
 
+3. Start the server
+```bash
+(require '[purchase.core :as core]) ; Load the namespace into the REPL session
+(core/start-server) ; Actually start the server process
+```
+
 3. Connect your editor
 In your Clojure editor (Neovim with Conjure, Emacs, etc.), connect to the nREPL server:
 ```vim
