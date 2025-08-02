@@ -1,14 +1,17 @@
 (ns purchase.handlers.product
-  (:require [ring.util.response :as response]))
+  (:require [ring.util.response :as response]
+            [clojure.tools.logging :as log]))
 
 ;; For now, use in-memory storage (replace with database later)
 (def products (atom []))
 (def product-id-counter (atom 0))
 
 (defn list-products [request]
+  (log/info "ESTA ENTRANDO AQUI")
   (response/response {:products @products}))
 
 (defn get-product [request]
+  (log/info "GETTING PRODUCT")
   (let [id (Integer/parseInt (get-in request [:params :id]))
         product (first (filter #(= (:id %) id) @products))]
     (if product
