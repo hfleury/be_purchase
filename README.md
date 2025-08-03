@@ -5,6 +5,12 @@ A Clojure REST API for the Purchase mobile application.
  - Clojure CLI
  - Java JDK 8 or later
 
+## Commands
+Download dependencies on deps.edn file
+```shell
+clojure -P -A:dev
+```
+
 ## Development Setup
 1. Clone the repository
 
