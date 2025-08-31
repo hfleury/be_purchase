@@ -1,7 +1,9 @@
 (ns purchase.db.connection
   (:require [next.jdbc :as jdbc]
             [next.jdbc.connection :as connection]
-            [purchase.config :as config])) ; Require your config
+            [purchase.config :as config])
+  (:import ; Import the class for type hinting and direct use
+           (com.zaxxer.hikari HikariDataSource))) ; Require your config
 
 ; Get the database specification map from your config
 (def db-spec (:db (config/get-config)))
@@ -10,9 +12,7 @@
 
 (defn create-connection []
   (println "Creating database connection pool with spec:" db-spec)
-  (connection/->pool
-    {:factory-class com.zaxxer.hikari.HikariDataSource}
-    db-spec))
+  (connection/->pool HikariDataSource db-spec))
 
 (defn get-connection []
   (when (nil? @db)

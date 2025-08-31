@@ -11,8 +11,8 @@
         ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
         ; Read .env files
         io.github.clojure/tools.build {:mvn/version "0.9.6"}
-        com.lambdaisland/dotenv {:mvn/version "0.2.5"} 
-        com.zaxxer/HikariCP {:mvn/version "5.0.1"}}
+        com.lambdaisland/dotenv {:mvn/version "0.2.5"}
+        com.zaxxer/HikariCP {:mvn/version "5.0.0"}}
  :paths ["src" "resources"]
  :mvn/repos {"clojars" {:url "https://repo.clojars.org/"}}
  :aliases {:dev {:extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}}
