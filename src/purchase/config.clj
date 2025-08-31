@@ -20,8 +20,8 @@
         :dbname "purchase_dev"
         :dbhost "localhost"
         :dbport 5432
-        :dbuser "purchase_user"
-        :dbpass "nosecret"}
+        :username "purchase_user"
+        :password "nosecret"}
    :server {:svport 3000}})
 
 ; --- Function to load configuration ---
@@ -57,8 +57,8 @@
     ; --- Construct and return the configuration map ---
     {:db {:dbtype "postgresql"
           :dbname db-name
-          :dbuser db-user  ; <-- Fixed typo: was :dbuer
-          :dbpass db-pass
+          :username db-user  ; <-- Fixed typo: was :dbuer
+          :password db-pass
           :dbhost db-host
           :dbport db-port}
      :server {:svport server-port}}))
