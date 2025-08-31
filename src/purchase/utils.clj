@@ -14,11 +14,11 @@
         (log/info "The parsing fail or was passed nil" _e)
         nil))))
 
-(defn parse-boolean
-  "Parse a string `s` into a boolean.
-  Returns true for 'true', 'TRUE', '1', 'yes', 'YES' (case-insensitive).
-  Returns false for any other non-nil string or nil.
-  Returns nil if `s` is nil."
-  [s]
-  (when s
-    (c/contains? #{"true" "TRUE" "1" "yes" "YES"} (string/upper-case s))))
+;(defn parse-boolean
+;  "Parse a string `s` into a boolean.
+;  Returns true for 'true', 'TRUE', '1', 'yes', 'YES' (case-insensitive).
+;  Returns false for any other non-nil string or nil.
+;  Returns nil if `s` is nil."
+;  [s]
+;  (when s
+;    (c/contains? #{"true" "TRUE" "1" "yes" "YES"} (string/upper-case s))))
