@@ -1,6 +1,5 @@
 (ns purchase.db.repository.product-repo
   (:require [next.jdbc :as jdbc]
-            [next.jdbc.sql :as sql] ; For convenient insert!, query, etc.
             [purchase.db.connection :as db]
             [clojure.tools.logging :as log]))
 
@@ -9,12 +8,22 @@
 (defn find-all []
   (log/debug "Fetching all products from database")
   (let [conn (db/get-connection)]
-    (sql/query conn ["SELECT * FROM products ORDER BY created_at DESC"])))
+    (try
+      (jdbc/execute! conn ["SELECT * FROM products ORDER BY created_at DESC"])
+      (catch Exception e
+        (log/error "Error executing query find-all:" (.getMessage e) (ex-data e))
+        (.printStackTrace e)
+        (throw e)))))
 
 (defn find-by-id [id]
   (log/debug "Fetching product by ID:" id)
   (let [conn (db/get-connection)]
-    (first (sql/query conn ["SELECT * FROM products WHERE id = ?" id]))))
+    (try
+      (first (jdbc/execute! conn ["SELECT * FROM products WHERE id = ?::uuid" id]))
+      (catch Exception e
+        (log/error "Error executing query in find-by-id" (.getMessage e) (ex-data e))
+        (.printStackTrace e)
+        (throw e)))))
 
 (defn create [product-data]
   (log/debug "Creating new product with data:" product-data)
@@ -30,16 +39,28 @@
 (defn update-product [id product-data]
   (log/debug "Updating product ID:" id "with data:" product-data)
   (let [conn (db/get-connection)
+        allowed-fields #{:name :price :description}
         ; Prepare data for update, excluding the ID
-        update-data (select-keys product-data [:name :price :description])]
-    ; next.jdbc.sql/update! updates rows matching the WHERE condition
-    ; It returns the number of rows affected
-    (let [rows-affected (sql/update! conn :products update-data {:id id})]
-      (if (> rows-affected 0)
-        ; If updated, fetch the updated record to return it
-        (find-by-id id)
-        ; If no rows affected, indicate not found
-        nil))))
+        update-data (select-keys product-data allowed-fields)
+        filtered-update-data (into {} (filter (fn [[_ v]] (some? v)) update-data))
+        fields-to-update (keys filtered-update-data)]
+    (if (empty? fields-to-update)
+      (do
+        (log/info "No valid fields to update product ID:" id)
+        nil)
+      (let [set-clauses (map #(str (name %) " = ?") fields-to-update)
+            set-clause-string (clojure.string/join ", " set-clauses)
+            values (map filtered-update-data fields-to-update)
+            sql-params (vec (concat [(str "UPDATE products SET " set-clause-string " WHERE id = ?::uuid")] values [id]))]
+        (try
+          (let [result (jdbc/execute-one! conn sql-params {:return-keys true})]
+            (find-by-id id))
+          (catch Exception e
+            (log/error "Error updating ID: " id " Error: " (.getMessage e) (ex-data e))
+            (.printStackTrace e)
+            (throw e)))))))
+
+
 
 (defn delete [id]
   (log/debug "Deleting product ID:" id)
