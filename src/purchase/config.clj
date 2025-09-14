@@ -6,7 +6,8 @@
 (def dotenv-vars
   (try
     (let [env-file-content (slurp ".env")] ; Read the .env file as a string
-      (dotenv/parse-dotenv env-file-content)) ; Parse the string content
+      (dotenv/parse-dotenv env-file-content)
+      (println "Loaded dotenv-vars:" env-file-content)) ; Parse the string content
     (catch java.io.FileNotFoundException e
       (println "Warning: .env file not found. Using defaults and system environment.")
       {}) ; Return an empty map if .env is not found
@@ -18,9 +19,9 @@
 (def default-app-config
   {:db {:dbtype "postgresql"
         :dbname "purchase_dev"
-        :dbhost "localhost"
-        :dbport 5432
-        :username "purchase_user"
+        :host "localhost"
+        :port 5432
+        :user "purchase_user"
         :password "nosecret"}
    :server {:svport 3000}})
 
@@ -36,19 +37,19 @@
                         (:dbname (:db default-app-config))) ; Final fallback
         db-user     (or (get dotenv-vars "DB_USER")
                         (System/getenv "DB_USER")
-                        (:dbuser (:db default-app-config)))
+                        (:user (:db default-app-config)))
         db-pass     (or (get dotenv-vars "DB_PASSWORD") ; Check common keys
                         (get dotenv-vars "DB_PASS")
                         (System/getenv "DB_PASSWORD")
                         (System/getenv "DB_PASS")
-                        (:dbpass (:db default-app-config)))
+                        (:password (:db default-app-config)))
         db-host     (or (get dotenv-vars "DB_HOST")
                         (System/getenv "DB_HOST")
-                        (:dbhost (:db default-app-config)))
+                        (:host (:db default-app-config)))
         db-port-str (or (get dotenv-vars "DB_PORT")
                         (System/getenv "DB_PORT"))
         db-port     (or (utils/parse-int db-port-str) ; Parse string to int
-                        (:dbport (:db default-app-config)))
+                        (:port (:db default-app-config)))
         ; --- Server Configuration ---
         server-port-str (or (get dotenv-vars "PORT")
                             (System/getenv "PORT"))
@@ -57,10 +58,11 @@
     ; --- Construct and return the configuration map ---
     {:db {:dbtype "postgresql"
           :dbname db-name
-          :username db-user  ; <-- Fixed typo: was :dbuer
+          :username db-user
+          :user db-user
           :password db-pass
-          :dbhost db-host
-          :dbport db-port}
+          :host db-host
+          :port db-port}
      :server {:svport server-port}}))
 
 ; --- Load configuration once when namespace is loaded ---

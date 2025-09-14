@@ -1,5 +1,6 @@
 (ns purchase.db.repository.product-repo
   (:require [next.jdbc :as jdbc]
+            [next.jdbc.sql :as sql]
             [purchase.db.connection :as db]
             [clojure.tools.logging :as log]))
 
@@ -9,7 +10,7 @@
   (log/debug "Fetching all products from database")
   (let [conn (db/get-connection)]
     (try
-      (jdbc/execute! conn ["SELECT * FROM products ORDER BY created_at DESC"])
+      (jdbc/execute! conn ["SELECT * FROM products WHERE deleted_at IS NULL ORDER BY created_at DESC"])
       (catch Exception e
         (log/error "Error executing query find-all:" (.getMessage e) (ex-data e))
         (.printStackTrace e)
@@ -51,7 +52,7 @@
       (let [set-clauses (map #(str (name %) " = ?") fields-to-update)
             set-clause-string (clojure.string/join ", " set-clauses)
             values (map filtered-update-data fields-to-update)
-            sql-params (vec (concat [(str "UPDATE products SET " set-clause-string " WHERE id = ?::uuid")] values [id]))]
+            sql-params (vec (concat [(str "UPDATE products SET" set-clause-string " WHERE id = ?::uuid")] values [id]))]
         (try
           (let [result (jdbc/execute-one! conn sql-params {:return-keys true})]
             (find-by-id id))
@@ -65,7 +66,12 @@
 (defn delete [id]
   (log/debug "Deleting product ID:" id)
   (let [conn (db/get-connection)]
-    ; next.jdbc.sql/delete! deletes rows matching the WHERE condition
-    ; It returns the number of rows affected
-    (let [rows-affected (sql/delete! conn :products {:id id})]
-      (> rows-affected 0)))) ; Return true if something was deleted
+    (try
+      (let [sql-params ["UPDATE products SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?::uuid" id]
+            result (jdbc/execute-one! conn sql-params {:return-keys true})]
+        (log/debug "Soft delete execute for ID: " id "Result: " result)
+        true)
+      (catch Exception e
+        (log/error "Error soft delete product ID: " id " Error: " (.getMessage e) (ex-data e))
+        (.printStackTrace e)
+        (throw e)))))

@@ -51,6 +51,33 @@ clojure -M:run
 ```
 The server will start on port 3000.
 
+## Database Migrations
+This project uses Migratus for database schema management.
+
+### Applying Migrations
+Migrations are typically applied automatically when the application starts via the initialize-database function in core.clj. To apply migrations manually in the REPL:
+```clojure
+(require '[purchase.db.migration :as db-mig])
+(db-mig/migrate-up)
+```
+
+### Creating New Migrations
+To create a new pair of migration files (up and down):
+
+```clojure
+(require '[purchase.db.migration :as db-mig])
+(db-mig/create-migration "your-migration-name")
+```
+This will generate timestamped files in resources/migrations/.
+
+### Rolling Back Migrations
+To roll back the last applied migration:
+
+```clojure
+(require '[purchase.db.migration :as db-mig])
+(db-mig/migrate-down)
+```
+
 ## API Endpoints
 
 Health Check
